@@ -1,4 +1,4 @@
-package ed.wgu.zamzow.scheduler.ui.dashboard;
+package ed.wgu.zamzow.scheduler.ui.terms;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,22 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import ed.wgu.zamzow.scheduler.databinding.FragmentDashboardBinding;
+import ed.wgu.zamzow.scheduler.databinding.FragmentTermsBinding;
 
-public class DashboardFragment extends Fragment {
+public class TermsFragment extends Fragment {
 
-    private FragmentDashboardBinding binding;
+    private FragmentTermsBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        DashboardViewModel dashboardViewModel =
-                new ViewModelProvider(this).get(DashboardViewModel.class);
+        TermsViewModel termsViewModel =
+                new ViewModelProvider(this).get(TermsViewModel.class);
 
-        binding = FragmentDashboardBinding.inflate(inflater, container, false);
+        binding = FragmentTermsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         final TextView textView = binding.textDashboard;
-        dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        termsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
