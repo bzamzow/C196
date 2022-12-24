@@ -1,5 +1,6 @@
 package ed.wgu.zamzow.scheduler.ui.home;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,8 +11,13 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import java.util.ArrayList;
+
+import ed.wgu.zamzow.scheduler.database.DBReader;
 import ed.wgu.zamzow.scheduler.database.SchedulerDB;
 import ed.wgu.zamzow.scheduler.databinding.FragmentHomeBinding;
+import ed.wgu.zamzow.scheduler.helpers.Vars;
+import ed.wgu.zamzow.scheduler.objects.Term;
 
 public class HomeFragment extends Fragment {
 
@@ -31,6 +37,10 @@ public class HomeFragment extends Fragment {
 
 
         schedulerDB = new SchedulerDB(getContext());
+        SQLiteDatabase sqLiteDatabase = schedulerDB.getWritableDatabase();
+        schedulerDB.onCreate(sqLiteDatabase);
+        DBReader dbReader = new DBReader(getContext());
+        Vars.terms = dbReader.getTerms();
 
         return root;
 

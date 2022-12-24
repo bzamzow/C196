@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 public class SchedulerDB extends SQLiteOpenHelper {
 
     public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "scheduler.db";
+    public static final String DATABASE_NAME = "scheduler.sqlite";
 
     private static final String CREATE_CLASS =
             "CREATE TABLE courses (ID INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT," +
@@ -19,7 +19,7 @@ public class SchedulerDB extends SQLiteOpenHelper {
             "start DATETIME, endDate DATETIME)";
     private static final String CREATE_INSTRUCTOR =
             "CREATE TABLE instructors (ID INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT," +
-            "email TEXT, name TEXT, phone TEXT)";
+            "email TEXT, phone TEXT)";
     private static final String CREATE_NOTE =
             "CREATE TABLE notes (ID INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, note TEXT," +
             "classID INTEGER)";
@@ -37,11 +37,15 @@ public class SchedulerDB extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL(CREATE_ASSESSMENT);
-        sqLiteDatabase.execSQL(CREATE_CLASS);
-        sqLiteDatabase.execSQL(CREATE_INSTRUCTOR);
-        sqLiteDatabase.execSQL(CREATE_NOTE);
-        sqLiteDatabase.execSQL(CREATE_TERM);
+        try {
+            sqLiteDatabase.execSQL(CREATE_ASSESSMENT);
+            sqLiteDatabase.execSQL(CREATE_CLASS);
+            sqLiteDatabase.execSQL(CREATE_INSTRUCTOR);
+            sqLiteDatabase.execSQL(CREATE_NOTE);
+            sqLiteDatabase.execSQL(CREATE_TERM);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override
