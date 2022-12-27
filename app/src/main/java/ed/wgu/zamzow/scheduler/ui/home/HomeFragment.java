@@ -39,8 +39,6 @@ public class HomeFragment extends Fragment {
         schedulerDB = new SchedulerDB(getContext());
         SQLiteDatabase sqLiteDatabase = schedulerDB.getWritableDatabase();
         schedulerDB.onCreate(sqLiteDatabase);
-        DBReader dbReader = new DBReader(getContext());
-        Vars.terms = dbReader.getTerms();
 
         return root;
 

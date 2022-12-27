@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,6 +19,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import ed.wgu.zamzow.scheduler.R;
 import ed.wgu.zamzow.scheduler.adapters.TermsAdapter;
+import ed.wgu.zamzow.scheduler.database.DBReader;
 import ed.wgu.zamzow.scheduler.databinding.FragmentTermsBinding;
 import ed.wgu.zamzow.scheduler.helpers.Vars;
 import ed.wgu.zamzow.scheduler.objects.Term;
@@ -27,6 +29,8 @@ public class TermsFragment extends Fragment {
     private FragmentTermsBinding binding;
     private FloatingActionButton btnAddTerm;
     private RecyclerView recyclerTerms;
+    private final int ADD_TERM = 111;
+    private View root;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -34,15 +38,25 @@ public class TermsFragment extends Fragment {
                 new ViewModelProvider(this).get(TermsViewModel.class);
 
         binding = FragmentTermsBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        root = binding.getRoot();
 
         btnAddTerm = root.findViewById(R.id.fabAddTerm);
         btnAddTerm.setOnClickListener(view -> {
             Intent addTerm = new Intent(getActivity(), AddTermActivity.class);
-            startActivity(addTerm);
+            startActivityForResult(addTerm, ADD_TERM);
         });
 
-        System.out.println("Setting up recycler");
+
+        SetupInterface();
+
+
+        return root;
+    }
+
+    private void SetupInterface() {
+
+        DBReader dbReader = new DBReader(getContext());
+        Vars.terms = dbReader.getTerms();
         recyclerTerms = root.findViewById(R.id.recyclerTerms);
         recyclerTerms.setLayoutManager(new LinearLayoutManager(getActivity()));
         TermsAdapter termsAdapter = new TermsAdapter(getActivity(), Vars.terms);
@@ -53,14 +67,19 @@ public class TermsFragment extends Fragment {
             startActivity(termView);
         });
         recyclerTerms.setAdapter(termsAdapter);
-
-
-        return root;
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ADD_TERM) {
+            SetupInterface();
+        }
     }
 }

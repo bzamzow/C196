@@ -1,5 +1,6 @@
 package ed.wgu.zamzow.scheduler.ui.courses;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
@@ -38,7 +39,9 @@ public class AddClassActivity extends AppCompatActivity {
     private ArrayList<Instructor> instructors = new ArrayList<>();
     private Button btnCancel, btnSave;
     private EditText editThis;
-    final Calendar myCalendar= Calendar.getInstance();
+    private final Calendar myCalendar= Calendar.getInstance();
+    private final int ADD_INSTRUCTOR = 110;
+
 
 
     @Override
@@ -98,7 +101,7 @@ public class AddClassActivity extends AppCompatActivity {
                     .setMessage("There are no instructors available. Would you like to add one now?")
                     .setPositiveButton("Yes", (dialogInterface, i) -> {
                         Intent addInstructorActivity = new Intent(getApplication(), AddInstructorActivity.class);
-                        startActivity(addInstructorActivity);
+                        startActivityForResult(addInstructorActivity, ADD_INSTRUCTOR);
                     })
                     .setNegativeButton("No", ((dialogInterface, i) -> finish()));
             alertDialog.show();
@@ -128,5 +131,14 @@ public class AddClassActivity extends AppCompatActivity {
         String dateFormat = "yyyy-MM-dd";
         SimpleDateFormat sdf = new SimpleDateFormat(dateFormat, Locale.US);
         editThis.setText(sdf.format(myCalendar.getTime()));
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == ADD_INSTRUCTOR) {
+            SetupInterface();
+        }
     }
 }
