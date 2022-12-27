@@ -13,6 +13,27 @@
         android:theme="@style/Theme.StudentScheduler"
         tools:targetApi="31">
         <activity
+            android:name=".ui.instructors.AddInstructorActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".ui.courses.AddClassActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".ui.terms.TermViewActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".ui.terms.AddTermActivity"
             android:exported="false">
             <meta-data

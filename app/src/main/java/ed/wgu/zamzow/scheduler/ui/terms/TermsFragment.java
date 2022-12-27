@@ -20,6 +20,7 @@ import ed.wgu.zamzow.scheduler.R;
 import ed.wgu.zamzow.scheduler.adapters.TermsAdapter;
 import ed.wgu.zamzow.scheduler.databinding.FragmentTermsBinding;
 import ed.wgu.zamzow.scheduler.helpers.Vars;
+import ed.wgu.zamzow.scheduler.objects.Term;
 
 public class TermsFragment extends Fragment {
 
@@ -46,7 +47,10 @@ public class TermsFragment extends Fragment {
         recyclerTerms.setLayoutManager(new LinearLayoutManager(getActivity()));
         TermsAdapter termsAdapter = new TermsAdapter(getActivity(), Vars.terms);
         termsAdapter.setClickListener((view, position) -> {
-            //Open Term);
+            Term selectedTerm = Vars.terms.get(position);
+            Intent termView = new Intent(getActivity(), TermViewActivity.class);
+            termView.putExtra("selectedTerm", selectedTerm);
+            startActivity(termView);
         });
         recyclerTerms.setAdapter(termsAdapter);
 

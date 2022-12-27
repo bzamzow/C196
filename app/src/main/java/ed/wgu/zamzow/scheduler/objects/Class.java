@@ -20,6 +20,7 @@ public class Class {
     private Date end;
     private int id;
     private int termid;
+    private int instructorID;
 
     public int getId() {
         return id;
@@ -33,7 +34,7 @@ public class Class {
         return title;
     }
 
-    public ArrayList<Assessment> getAssessements() {
+    public ArrayList<Assessment> getAssessments() {
         return assessments;
     }
 
@@ -57,16 +58,16 @@ public class Class {
         return termid;
     }
 
+    public int getInstructorID() {
+        return instructorID;
+    }
+
     public void setDesc(String desc) {
         this.desc = desc;
     }
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public void setAssessements(ArrayList<Assessment> assessments) {
-        this.assessments = assessments;
     }
 
     public void setEnd(Date end) {
@@ -91,5 +92,13 @@ public class Class {
 
     public void setTermid(int termid) {
         this.termid = termid;
+    }
+
+    public void setInstructorID(int instructorID) {
+        this.instructorID = instructorID;
+    }
+
+    public void setAssessments(ArrayList<Assessment> assessments) {
+        this.assessments = assessments;
     }
 }

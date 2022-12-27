@@ -1,9 +1,10 @@
 package ed.wgu.zamzow.scheduler.objects;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Term {
+public class Term implements Serializable {
 
     private String title;
     private Date start;
