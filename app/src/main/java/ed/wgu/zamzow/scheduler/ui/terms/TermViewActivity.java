@@ -1,5 +1,6 @@
 package ed.wgu.zamzow.scheduler.ui.terms;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -7,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -21,6 +23,7 @@ import ed.wgu.zamzow.scheduler.helpers.Vars;
 import ed.wgu.zamzow.scheduler.objects.Class;
 import ed.wgu.zamzow.scheduler.objects.Term;
 import ed.wgu.zamzow.scheduler.ui.courses.AddClassActivity;
+import ed.wgu.zamzow.scheduler.ui.courses.ClassViewActivity;
 
 public class TermViewActivity extends AppCompatActivity {
 
@@ -28,6 +31,7 @@ public class TermViewActivity extends AppCompatActivity {
     private Term selectedTerm;
     private FloatingActionButton fabAddCourse;
     private RecyclerView recyclerCourses;
+    private final int VIEW_COURSE = 113;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +52,7 @@ public class TermViewActivity extends AppCompatActivity {
 
             fabAddCourse.setOnClickListener(view -> {
                 Intent addCourseActivity = new Intent(this, AddClassActivity.class);
-                addCourseActivity.putExtra("termID",selectedTerm.getId());
+                addCourseActivity.putExtra("selectedTerm",selectedTerm);
                 startActivity(addCourseActivity);
             });
         }
@@ -62,10 +66,18 @@ public class TermViewActivity extends AppCompatActivity {
         CoursesAdapter coursesAdapter = new CoursesAdapter(this, courses);
         coursesAdapter.setClickListener((view, position) -> {
             Class selectedClass = courses.get(position);
-            Intent termView = new Intent(this, TermViewActivity.class);
-            termView.putExtra("selectedClass", selectedClass);
-            startActivity(termView);
+            Intent classView = new Intent(this, ClassViewActivity.class);
+            classView.putExtra("selectedClass", selectedClass);
+            startActivityForResult(classView,VIEW_COURSE);
         });
         recyclerCourses.setAdapter(coursesAdapter);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == VIEW_COURSE) {
+            SetupInterface();
+        }
     }
 }

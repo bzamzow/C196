@@ -2,12 +2,10 @@ package ed.wgu.zamzow.scheduler.ui.courses;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
 
 import android.app.DatePickerDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -17,7 +15,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toolbar;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -27,19 +24,19 @@ import java.util.Calendar;
 import java.util.Locale;
 
 import ed.wgu.zamzow.scheduler.R;
-import ed.wgu.zamzow.scheduler.adapters.TermsAdapter;
 import ed.wgu.zamzow.scheduler.database.DBReader;
 import ed.wgu.zamzow.scheduler.database.DBWriter;
 import ed.wgu.zamzow.scheduler.helpers.DateHelper;
 import ed.wgu.zamzow.scheduler.objects.Class;
 import ed.wgu.zamzow.scheduler.objects.Instructor;
+import ed.wgu.zamzow.scheduler.objects.Term;
 import ed.wgu.zamzow.scheduler.ui.instructors.AddInstructorActivity;
-import ed.wgu.zamzow.scheduler.ui.terms.AddTermActivity;
 
 public class AddClassActivity extends AppCompatActivity {
 
     private EditText editTitle, editDesc, editStart, editEnd;
     private AppCompatSpinner spinnerInstructor, spinnerStatus;
+    private Term selectedTerm;
     private ArrayList<Instructor> instructors = new ArrayList<>();
     private Button btnCancel, btnSave;
     private EditText editThis;
@@ -52,6 +49,7 @@ public class AddClassActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_class);
+        selectedTerm = (Term) getIntent().getSerializableExtra("selectedTerm");
 
         SetupInterface();
     }
@@ -119,7 +117,6 @@ public class AddClassActivity extends AppCompatActivity {
         instructorArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerInstructor.setAdapter(instructorArrayAdapter);
 
-        spinnerInstructor.setFocusable(true);
         if (instructors.size() == 0 || instructors == null) {
 
             MaterialAlertDialogBuilder alertDialog = new MaterialAlertDialogBuilder(this)
@@ -138,19 +135,17 @@ public class AddClassActivity extends AppCompatActivity {
         btnSave.setOnClickListener(view -> {
             Class course = new Class();
             course.setTitle(editTitle.getText().toString());
-            course.setStatus(spinnerStatus.getSelectedItemPosition() + 1);
+            course.setStatus(spinnerStatus.getSelectedItemPosition());
             course.setStart(DateHelper.getDate(editStart.getText().toString()));
             course.setEnd(DateHelper.getDate(editEnd.getText().toString()));
             course.setDesc(editDesc.getText().toString());
-            course.setInstructorID(instructors.get(spinnerInstructor.getSelectedItemPosition()).getID());
-
+            course.setInstructorID(((Instructor)spinnerInstructor.getSelectedItem()).getID());
+            course.setTermid(selectedTerm.getId());
             DBWriter dbWriter = new DBWriter(this);
             dbWriter.CreateCourse(course);
             finish();
         });
     }
-
-
 
     public void setdate() {
         String dateFormat = "yyyy-MM-dd";

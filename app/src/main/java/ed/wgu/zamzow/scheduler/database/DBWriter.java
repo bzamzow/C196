@@ -37,7 +37,7 @@ public class DBWriter {
         values.put("description",course.getDesc());
         values.put("status",course.getStatus());
         values.put("instructorID", course.getInstructorID());
-        values.put("termid", course.getId());
+        values.put("termid", course.getTermid());
         db.insert("courses",null, values);
         db.close();
         schedulerDB.close();

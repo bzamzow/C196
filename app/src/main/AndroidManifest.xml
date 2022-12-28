@@ -29,6 +29,14 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".ui.courses.ClassViewActivity"
+            android:exported="false"
+            android:label="View Course">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".ui.terms.TermViewActivity"
             android:exported="false"
             android:label="Term View">

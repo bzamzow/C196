@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
+
 import ed.wgu.zamzow.scheduler.R;
 import ed.wgu.zamzow.scheduler.adapters.TermsAdapter;
 import ed.wgu.zamzow.scheduler.database.DBReader;
@@ -27,6 +29,7 @@ public class TermsFragment extends Fragment {
     private FragmentTermsBinding binding;
     private final int ADD_TERM = 111;
     private View root;
+    private ArrayList<Term> terms;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -52,12 +55,12 @@ public class TermsFragment extends Fragment {
     private void SetupInterface() {
 
         DBReader dbReader = new DBReader(getContext());
-        Vars.terms = dbReader.getTerms();
+        terms = dbReader.getTerms();
         RecyclerView recyclerTerms = root.findViewById(R.id.recyclerClasses);
         recyclerTerms.setLayoutManager(new LinearLayoutManager(getActivity()));
-        TermsAdapter termsAdapter = new TermsAdapter(getActivity(), Vars.terms);
+        TermsAdapter termsAdapter = new TermsAdapter(getActivity(), terms);
         termsAdapter.setClickListener((view, position) -> {
-            Term selectedTerm = Vars.terms.get(position);
+            Term selectedTerm = terms.get(position);
             Intent termView = new Intent(getActivity(), TermViewActivity.class);
             termView.putExtra("selectedTerm", selectedTerm);
             startActivity(termView);

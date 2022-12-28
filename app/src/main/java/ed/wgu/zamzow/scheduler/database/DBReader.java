@@ -32,7 +32,7 @@ public class DBReader {
         Cursor cursor = db.query("terms",params,null, null, null, null, null);
         while (cursor.moveToNext()) {
             Term term = new Term();
-            term.setId(cursor.getColumnIndexOrThrow("ID"));
+            term.setId(cursor.getInt(cursor.getColumnIndexOrThrow("ID")));
             term.setTitle(cursor.getString(cursor.getColumnIndexOrThrow("title")));
             term.setStart(DateHelper.getDateFromDB(cursor.getString(cursor.getColumnIndexOrThrow("start"))));
             term.setEnd(DateHelper.getDateFromDB(cursor.getString(cursor.getColumnIndexOrThrow("endDate"))));
@@ -45,19 +45,19 @@ public class DBReader {
     public ArrayList<Class> getCourses(int TermID) {
         courses = new ArrayList<>();
         String[] params = {"*"};
-        String whereClause = "termID = ?";
+        String whereClause = "termid = ?";
         String[] whereArgs = {String.valueOf(TermID)};
         Cursor cursor = db.query("courses",params,whereClause, whereArgs, null, null, null);
         while (cursor.moveToNext()) {
             Class course = new Class();
-            course.setId(cursor.getColumnIndexOrThrow("ID"));
+            course.setId(cursor.getInt(cursor.getColumnIndexOrThrow("ID")));
             course.setTitle(cursor.getString(cursor.getColumnIndexOrThrow("title")));
             course.setDesc(cursor.getString(cursor.getColumnIndexOrThrow("description")));
-            course.setStatus(cursor.getColumnIndexOrThrow("status"));
+            course.setStatus(cursor.getInt(cursor.getColumnIndexOrThrow("status")));
             course.setStart(DateHelper.getDateFromDB(cursor.getString(cursor.getColumnIndexOrThrow("start"))));
             course.setEnd(DateHelper.getDateFromDB(cursor.getString(cursor.getColumnIndexOrThrow("endDate"))));
-            course.setInstructorID(cursor.getColumnIndexOrThrow("instructorID"));
-            course.setTermid(cursor.getColumnIndexOrThrow("termid"));
+            course.setInstructorID(cursor.getInt(cursor.getColumnIndexOrThrow("instructorID")));
+            course.setTermid(cursor.getInt(cursor.getColumnIndexOrThrow("termid")));
             courses.add(course);
         }
         cursor.close();
@@ -70,7 +70,7 @@ public class DBReader {
         Cursor cursor = db.query("instructors",params,null, null, null, null, null);
         while (cursor.moveToNext()) {
             Instructor instructor = new Instructor();
-            instructor.setID(cursor.getColumnIndexOrThrow("ID"));
+            instructor.setID(cursor.getInt(cursor.getColumnIndexOrThrow("ID")));
             instructor.setName(cursor.getString(cursor.getColumnIndexOrThrow("name")));
             instructor.setEmail(cursor.getString(cursor.getColumnIndexOrThrow("email")));
             instructor.setPhone(cursor.getString(cursor.getColumnIndexOrThrow("phone")));
