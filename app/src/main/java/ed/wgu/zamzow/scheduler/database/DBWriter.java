@@ -8,12 +8,14 @@ import android.database.sqlite.SQLiteOpenHelper;
 import ed.wgu.zamzow.scheduler.objects.Assessment;
 import ed.wgu.zamzow.scheduler.objects.Class;
 import ed.wgu.zamzow.scheduler.objects.Instructor;
+import ed.wgu.zamzow.scheduler.objects.Note;
 import ed.wgu.zamzow.scheduler.objects.Term;
 
 public class DBWriter {
 
-    SchedulerDB schedulerDB;
-    SQLiteDatabase db;
+    private SQLiteDatabase db;
+    private SchedulerDB schedulerDB;
+
 
     public DBWriter(Context context) {
         schedulerDB = new SchedulerDB(context);
@@ -27,7 +29,6 @@ public class DBWriter {
         values.put("endDate",term.getEnd().toString());
         db.insert("terms",null, values);
         db.close();
-        schedulerDB.close();
     }
 
     public void CreateCourse(Class course) {
@@ -41,7 +42,6 @@ public class DBWriter {
         values.put("termid", course.getTermid());
         db.insert("courses",null, values);
         db.close();
-        schedulerDB.close();
     }
 
     public void CreateInstructor(Instructor instructor) {
@@ -51,7 +51,6 @@ public class DBWriter {
         values.put("phone",instructor.getPhone());
         db.insert("instructors",null, values);
         db.close();
-        schedulerDB.close();
     }
 
     public void CreateAssessment(Assessment assessment) {
@@ -62,6 +61,14 @@ public class DBWriter {
         values.put("classID",assessment.getClassID());
         db.insert("assessments",null, values);
         db.close();
-        schedulerDB.close();
+    }
+
+    public void CreateNote(Note note) {
+        ContentValues values = new ContentValues();
+        values.put("title", note.getTitle());
+        values.put("note",note.getNote());
+        values.put("classID",note.getClassID());
+        db.insert("notes",null, values);
+        db.close();
     }
 }

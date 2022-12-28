@@ -95,7 +95,9 @@ public class ClassViewActivity extends AppCompatActivity {
     }
 
     private void AddNote() {
-
+        Intent addNoteActivity = new Intent(this, AddNoteActivity.class);
+        addNoteActivity.putExtra("selectedClass", selectedClass);
+        startActivityForResult(addNoteActivity, ADD_ASSESSMENT);
     }
 
     @Override

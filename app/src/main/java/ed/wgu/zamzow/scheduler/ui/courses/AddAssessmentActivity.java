@@ -11,7 +11,6 @@ import android.widget.EditText;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 import ed.wgu.zamzow.scheduler.R;
@@ -19,7 +18,6 @@ import ed.wgu.zamzow.scheduler.database.DBWriter;
 import ed.wgu.zamzow.scheduler.helpers.DateHelper;
 import ed.wgu.zamzow.scheduler.objects.Assessment;
 import ed.wgu.zamzow.scheduler.objects.Class;
-import ed.wgu.zamzow.scheduler.objects.Term;
 
 public class AddAssessmentActivity extends AppCompatActivity {
 

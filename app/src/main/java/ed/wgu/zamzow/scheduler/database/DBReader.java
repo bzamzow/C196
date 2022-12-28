@@ -16,22 +16,15 @@ import ed.wgu.zamzow.scheduler.objects.Term;
 
 public class DBReader {
     private SchedulerDB schedulerDB;
-    private SQLiteDatabase db;
-    private ArrayList<Term> terms;
-    private ArrayList<Class> courses;
-    private ArrayList<Instructor> instructors;
-    private ArrayList<Assessment> assessments;
-    private ArrayList<Note> notes;
+    private final SQLiteDatabase db;
 
     public DBReader(Context context) {
         schedulerDB = new SchedulerDB(context);
         db = schedulerDB.getReadableDatabase();
     }
 
-
-
     public ArrayList<Term> getTerms() {
-        terms = new ArrayList<>();
+        ArrayList<Term> terms = new ArrayList<>();
         String[] params = {"*"};
         Cursor cursor = db.query("terms",params,null, null, null, null, null);
         while (cursor.moveToNext()) {
@@ -47,7 +40,7 @@ public class DBReader {
     }
 
     public ArrayList<Class> getCourses(int TermID) {
-        courses = new ArrayList<>();
+        ArrayList<Class> courses = new ArrayList<>();
         String[] params = {"*"};
         String whereClause = "termid = ?";
         String[] whereArgs = {String.valueOf(TermID)};
@@ -69,7 +62,7 @@ public class DBReader {
     }
 
     public ArrayList<Assessment> getAssessments(int CourseID) {
-        assessments = new ArrayList<>();
+        ArrayList<Assessment> assessments = new ArrayList<>();
         String[] params = {"*"};
         String whereClause = "classID = ?";
         String[] whereArgs = {String.valueOf(CourseID)};
@@ -88,7 +81,7 @@ public class DBReader {
     }
 
     public ArrayList<Note> getNotes(int CourseID) {
-        notes = new ArrayList<>();
+        ArrayList<Note> notes = new ArrayList<>();
         String[] params = {"*"};
         String whereClause = "classID = ?";
         String[] whereArgs = {String.valueOf(CourseID)};
@@ -106,7 +99,7 @@ public class DBReader {
     }
 
     public ArrayList<Instructor> getInstructors() {
-        instructors = new ArrayList<>();
+        ArrayList<Instructor> instructors = new ArrayList<>();
         String[] params = {"*"};
         Cursor cursor = db.query("instructors",params,null, null, null, null, null);
         while (cursor.moveToNext()) {
