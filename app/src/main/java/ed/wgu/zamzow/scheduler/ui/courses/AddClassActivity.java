@@ -1,5 +1,6 @@
 package ed.wgu.zamzow.scheduler.ui.courses;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,11 +10,14 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toolbar;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -50,6 +54,28 @@ public class AddClassActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_class);
 
         SetupInterface();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.add_class_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.add_instructor:
+               addInstructor();
+               return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void addInstructor() {
+        Intent addInstructorActivity = new Intent(getApplication(), AddInstructorActivity.class);
+        startActivityForResult(addInstructorActivity, ADD_INSTRUCTOR);
     }
 
     private void SetupInterface() {
@@ -100,8 +126,7 @@ public class AddClassActivity extends AppCompatActivity {
                     .setTitle("No Instructors")
                     .setMessage("There are no instructors available. Would you like to add one now?")
                     .setPositiveButton("Yes", (dialogInterface, i) -> {
-                        Intent addInstructorActivity = new Intent(getApplication(), AddInstructorActivity.class);
-                        startActivityForResult(addInstructorActivity, ADD_INSTRUCTOR);
+                        addInstructor();
                     })
                     .setNegativeButton("No", ((dialogInterface, i) -> finish()));
             alertDialog.show();
