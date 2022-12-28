@@ -13,17 +13,17 @@ import java.util.ArrayList;
 
 import ed.wgu.zamzow.scheduler.R;
 import ed.wgu.zamzow.scheduler.helpers.DateHelper;
-import ed.wgu.zamzow.scheduler.objects.Class;
+import ed.wgu.zamzow.scheduler.objects.Note;
 
-public class CoursesAdapter extends RecyclerView.Adapter<CoursesAdapter.ViewHolder> {
+public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> {
 
-    private final ArrayList<Class> courses;
+    private final ArrayList<Note> notes;
     private final LayoutInflater inflater;
     public ItemClickListener clickListener;
 
-    public CoursesAdapter(Context context, ArrayList<Class> courses) {
+    public NotesAdapter(Context context, ArrayList<Note> notes) {
         inflater = LayoutInflater.from(context);
-        this.courses = courses;
+        this.notes = notes;
     }
 
     @NonNull
@@ -36,41 +36,34 @@ public class CoursesAdapter extends RecyclerView.Adapter<CoursesAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.getCourseName().setText(courses.get(position).getTitle());
-        holder.getStartDate().setText(DateHelper.showDate(courses.get(position).getStart()));
-        holder.getEndDate().setText(DateHelper.showDate(courses.get(position).getEnd()));
+        holder.getTitle().setText(notes.get(position).getTitle());
+        holder.getNote().setText(notes.get(position).getNote());
     }
 
     @Override
     public int getItemCount() {
-        return courses.size();
+        return notes.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private final TextView courseName;
-        private final TextView startDate;
-        private final TextView endDate;
+        private final TextView title;
+        private final TextView note;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            courseName = itemView.findViewById(R.id.title);
-            startDate = itemView.findViewById(R.id.startDate);
-            endDate = itemView.findViewById(R.id.endDate);
+            title = itemView.findViewById(R.id.title);
+            note = itemView.findViewById(R.id.note);
             itemView.setOnClickListener(this);
         }
 
-        public TextView getCourseName() {
-            return courseName;
+        public TextView getTitle() {
+            return title;
         }
 
-        public TextView getStartDate() {
-            return startDate;
-        }
-
-        public TextView getEndDate() {
-            return endDate;
+        public TextView getNote() {
+            return note;
         }
 
         @Override

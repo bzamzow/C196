@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import ed.wgu.zamzow.scheduler.objects.Assessment;
 import ed.wgu.zamzow.scheduler.objects.Class;
 import ed.wgu.zamzow.scheduler.objects.Instructor;
 import ed.wgu.zamzow.scheduler.objects.Term;
@@ -49,6 +50,17 @@ public class DBWriter {
         values.put("email",instructor.getEmail());
         values.put("phone",instructor.getPhone());
         db.insert("instructors",null, values);
+        db.close();
+        schedulerDB.close();
+    }
+
+    public void CreateAssessment(Assessment assessment) {
+        ContentValues values = new ContentValues();
+        values.put("title", assessment.getTitle());
+        values.put("type",assessment.getType());
+        values.put("endDate",assessment.getEnd().toString());
+        values.put("classID",assessment.getClassID());
+        db.insert("assessments",null, values);
         db.close();
         schedulerDB.close();
     }

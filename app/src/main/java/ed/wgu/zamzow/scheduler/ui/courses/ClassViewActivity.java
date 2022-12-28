@@ -3,9 +3,13 @@ package ed.wgu.zamzow.scheduler.ui.courses;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -20,7 +24,9 @@ import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import ed.wgu.zamzow.scheduler.R;
+import ed.wgu.zamzow.scheduler.adapters.AssessmentAdapter;
 import ed.wgu.zamzow.scheduler.adapters.CoursesAdapter;
+import ed.wgu.zamzow.scheduler.adapters.NotesAdapter;
 import ed.wgu.zamzow.scheduler.database.DBReader;
 import ed.wgu.zamzow.scheduler.helpers.DateHelper;
 import ed.wgu.zamzow.scheduler.objects.Assessment;
@@ -30,7 +36,7 @@ import ed.wgu.zamzow.scheduler.objects.Note;
 
 public class ClassViewActivity extends AppCompatActivity {
 
-    private EditText txtTitle, txtStart, txtEnd;
+    private EditText txtTitle, txtStart, txtEnd, txtDesc;
     private Class selectedClass;
     private FloatingActionButton fabEdit;
     private AppCompatSpinner spinnerInstructor, spinnerStatus;
@@ -42,6 +48,8 @@ public class ClassViewActivity extends AppCompatActivity {
     private final Calendar myCalendar= Calendar.getInstance();
     private boolean isEditMode = false;
     private EditText editThis;
+    private final int ADD_NOTE = 114;
+    private final int ADD_ASSESSMENT = 115;
 
 
     @Override
@@ -80,15 +88,53 @@ public class ClassViewActivity extends AppCompatActivity {
 
     }
 
+    private void AddAssessment() {
+        Intent AddAssessmentIntent = new Intent(this, AddAssessmentActivity.class);
+        AddAssessmentIntent.putExtra("selectedClass", selectedClass);
+        startActivityForResult(AddAssessmentIntent, ADD_ASSESSMENT);
+    }
+
+    private void AddNote() {
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.classes_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.add_assessment:
+                AddAssessment();
+                return true;
+            case R.id.add_note:
+                AddNote();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        SetupInterface();
+    }
+
     private void SetupInterface() {
 
         if ((selectedClass = (Class) getIntent().getSerializableExtra("selectedClass")) != null) {
             txtTitle = findViewById(R.id.txtTitle);
             txtStart = findViewById(R.id.editStart);
             txtEnd = findViewById(R.id.editEnd);
+            txtDesc = findViewById(R.id.txtDesc);
             fabEdit = findViewById(R.id.fabEdit);
 
             txtTitle.setText(selectedClass.getTitle());
+            txtDesc.setText(selectedClass.getDesc());
 
 
             fabEdit.setOnClickListener(view -> {
@@ -105,12 +151,9 @@ public class ClassViewActivity extends AppCompatActivity {
                 txtStart.setEnabled(isEditMode);
                 spinnerInstructor.setEnabled(isEditMode);
                 spinnerStatus.setEnabled(isEditMode);
+                txtDesc.setEnabled(isEditMode);
                 SetupDateFields();
             });
-
-
-            System.out.println(DateHelper.showDate(selectedClass.getStart()));
-            System.out.println(DateHelper.showDate(selectedClass.getEnd()));
 
             txtStart.setText(DateHelper.showDate(selectedClass.getStart()));
             txtEnd.setText(DateHelper.showDate(selectedClass.getEnd()));
@@ -146,26 +189,26 @@ public class ClassViewActivity extends AppCompatActivity {
     }
 
     private void SetupAssessments() {
-        ArrayList<Class> courses = dbReader.getCourses(selectedClass.getId());
-        recyclerAssessments = findViewById(R.id.recyclerNotes);
+        ArrayList<Assessment> assessments = dbReader.getAssessments(selectedClass.getId());
+        recyclerAssessments = findViewById(R.id.recyclerAssessments);
         recyclerAssessments.setLayoutManager(new LinearLayoutManager(this));
-        CoursesAdapter coursesAdapter = new CoursesAdapter(this, courses);
-        coursesAdapter.setClickListener((view, position) -> {
-            Class selectedClass = courses.get(position);
+        AssessmentAdapter assessmentAdapter = new AssessmentAdapter(this, assessments);
+        assessmentAdapter.setClickListener((view, position) -> {
+            Assessment assessment = assessments.get(position);
             Intent termView = new Intent(this, ClassViewActivity.class);
             termView.putExtra("selectedClass", selectedClass);
             startActivity(termView);
         });
-        recyclerAssessments.setAdapter(coursesAdapter);
+        recyclerAssessments.setAdapter(assessmentAdapter);
     }
 
     private void SetupNotes() {
-        ArrayList<Class> courses = dbReader.getCourses(selectedClass.getId());
+        ArrayList<Note> notes = dbReader.getNotes(selectedClass.getId());
         recyclerNotes = findViewById(R.id.recyclerNotes);
         recyclerNotes.setLayoutManager(new LinearLayoutManager(this));
-        CoursesAdapter coursesAdapter = new CoursesAdapter(this, courses);
+        NotesAdapter coursesAdapter = new NotesAdapter(this, notes);
         coursesAdapter.setClickListener((view, position) -> {
-            Class selectedClass = courses.get(position);
+            Note selectedNote = notes.get(position);
             Intent termView = new Intent(this, ClassViewActivity.class);
             termView.putExtra("selectedClass", selectedClass);
             startActivity(termView);

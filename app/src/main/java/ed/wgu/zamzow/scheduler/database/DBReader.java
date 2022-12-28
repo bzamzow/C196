@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import ed.wgu.zamzow.scheduler.helpers.DateHelper;
+import ed.wgu.zamzow.scheduler.objects.Assessment;
 import ed.wgu.zamzow.scheduler.objects.Class;
 import ed.wgu.zamzow.scheduler.objects.Instructor;
+import ed.wgu.zamzow.scheduler.objects.Note;
 import ed.wgu.zamzow.scheduler.objects.Term;
 
 public class DBReader {
@@ -18,6 +20,8 @@ public class DBReader {
     private ArrayList<Term> terms;
     private ArrayList<Class> courses;
     private ArrayList<Instructor> instructors;
+    private ArrayList<Assessment> assessments;
+    private ArrayList<Note> notes;
 
     public DBReader(Context context) {
         schedulerDB = new SchedulerDB(context);
@@ -62,6 +66,43 @@ public class DBReader {
         }
         cursor.close();
         return courses;
+    }
+
+    public ArrayList<Assessment> getAssessments(int CourseID) {
+        assessments = new ArrayList<>();
+        String[] params = {"*"};
+        String whereClause = "classID = ?";
+        String[] whereArgs = {String.valueOf(CourseID)};
+        Cursor cursor = db.query("assessments",params,whereClause, whereArgs, null, null, null);
+        while (cursor.moveToNext()) {
+            Assessment assessment = new Assessment();
+            assessment.setID(cursor.getInt(cursor.getColumnIndexOrThrow("ID")));
+            assessment.setTitle(cursor.getString(cursor.getColumnIndexOrThrow("title")));
+            assessment.setType(cursor.getInt(cursor.getColumnIndexOrThrow("type")));
+            assessment.setEnd(DateHelper.getDateFromDB(cursor.getString(cursor.getColumnIndexOrThrow("endDate"))));
+            assessment.setClassID(cursor.getInt(cursor.getColumnIndexOrThrow("classID")));
+            assessments.add(assessment);
+        }
+        cursor.close();
+        return assessments;
+    }
+
+    public ArrayList<Note> getNotes(int CourseID) {
+        notes = new ArrayList<>();
+        String[] params = {"*"};
+        String whereClause = "classID = ?";
+        String[] whereArgs = {String.valueOf(CourseID)};
+        Cursor cursor = db.query("notes",params,whereClause, whereArgs, null, null, null);
+        while (cursor.moveToNext()) {
+            Note note = new Note();
+            note.setId(cursor.getInt(cursor.getColumnIndexOrThrow("ID")));
+            note.setTitle(cursor.getString(cursor.getColumnIndexOrThrow("title")));
+            note.setNote(cursor.getString(cursor.getColumnIndexOrThrow("note")));
+            note.setClassID(cursor.getInt(cursor.getColumnIndexOrThrow("classID")));
+            notes.add(note);
+        }
+        cursor.close();
+        return notes;
     }
 
     public ArrayList<Instructor> getInstructors() {
