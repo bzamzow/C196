@@ -9,7 +9,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="415dp"
         android:layout_height="664dp"
-        android:id="@+id/recyclerTerms"
+        android:id="@+id/recyclerClasses"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

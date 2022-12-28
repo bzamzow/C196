@@ -1,9 +1,10 @@
 package ed.wgu.zamzow.scheduler.objects;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Class {
+public class Class implements Serializable {
 
     private final int PLANTOTAKE = 1;
     private final int INPROGRESS = 2;

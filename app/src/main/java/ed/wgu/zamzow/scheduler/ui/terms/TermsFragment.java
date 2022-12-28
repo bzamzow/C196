@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,8 +25,6 @@ import ed.wgu.zamzow.scheduler.objects.Term;
 public class TermsFragment extends Fragment {
 
     private FragmentTermsBinding binding;
-    private FloatingActionButton btnAddTerm;
-    private RecyclerView recyclerTerms;
     private final int ADD_TERM = 111;
     private View root;
 
@@ -40,7 +36,7 @@ public class TermsFragment extends Fragment {
         binding = FragmentTermsBinding.inflate(inflater, container, false);
         root = binding.getRoot();
 
-        btnAddTerm = root.findViewById(R.id.fabAddTerm);
+        FloatingActionButton btnAddTerm = root.findViewById(R.id.fabAddTerm);
         btnAddTerm.setOnClickListener(view -> {
             Intent addTerm = new Intent(getActivity(), AddTermActivity.class);
             startActivityForResult(addTerm, ADD_TERM);
@@ -57,7 +53,7 @@ public class TermsFragment extends Fragment {
 
         DBReader dbReader = new DBReader(getContext());
         Vars.terms = dbReader.getTerms();
-        recyclerTerms = root.findViewById(R.id.recyclerTerms);
+        RecyclerView recyclerTerms = root.findViewById(R.id.recyclerClasses);
         recyclerTerms.setLayoutManager(new LinearLayoutManager(getActivity()));
         TermsAdapter termsAdapter = new TermsAdapter(getActivity(), Vars.terms);
         termsAdapter.setClickListener((view, position) -> {
