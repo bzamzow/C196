@@ -13,15 +13,25 @@
         android:theme="@style/Theme.StudentScheduler"
         tools:targetApi="31">
         <activity
+            android:name=".ui.courses.AssessmentViewActivity"
+            android:exported="false"
+            android:label="Assessment">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".ui.courses.AddNoteActivity"
-            android:exported="false">
+            android:exported="false"
+            android:label="Add Note">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".ui.courses.AddAssessmentActivity"
-            android:exported="false">
+            android:exported="false"
+            android:label="Add Assessment">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />

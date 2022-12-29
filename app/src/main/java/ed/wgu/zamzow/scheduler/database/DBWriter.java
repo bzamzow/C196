@@ -44,6 +44,22 @@ public class DBWriter {
         db.close();
     }
 
+    public void UpdateCourse(Class course) {
+        String whereClause = "ID = ?";
+        String[] whereArgs = {String.valueOf(course.getId())};
+        ContentValues values = new ContentValues();
+        values.put("title", course.getTitle());
+        System.out.println(course.getStart().toString());
+        values.put("start",course.getStart().toString());
+        values.put("endDate",course.getEnd().toString());
+        values.put("description",course.getDesc());
+        values.put("status",course.getStatus());
+        values.put("instructorID", course.getInstructorID());
+        values.put("termid", course.getTermid());
+        db.update("courses",values, whereClause, whereArgs);
+        db.close();
+    }
+
     public void CreateInstructor(Instructor instructor) {
         ContentValues values = new ContentValues();
         values.put("name", instructor.getName());
@@ -60,6 +76,18 @@ public class DBWriter {
         values.put("endDate",assessment.getEnd().toString());
         values.put("classID",assessment.getClassID());
         db.insert("assessments",null, values);
+        db.close();
+    }
+
+    public void UpdateAssessment(Assessment assessment) {
+        String whereClause = "ID = ?";
+        String[] whereArgs = {String.valueOf(assessment.getID())};
+        ContentValues values = new ContentValues();
+        values.put("title", assessment.getTitle());
+        values.put("type",assessment.getType());
+        values.put("endDate",assessment.getEnd().toString());
+        values.put("classID",assessment.getClassID());
+        db.update("assessments",values, whereClause, whereArgs);
         db.close();
     }
 

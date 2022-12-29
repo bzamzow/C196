@@ -1,10 +1,11 @@
 package ed.wgu.zamzow.scheduler.objects;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import kotlin.jvm.internal.PropertyReference0Impl;
 
-public class Assessment {
+public class Assessment implements Serializable {
 
     private final int OBJECTIVE = 1;
     private final int PERFORMANCE = 2;

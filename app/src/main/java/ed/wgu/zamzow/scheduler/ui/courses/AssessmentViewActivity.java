@@ -9,6 +9,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -19,20 +21,20 @@ import ed.wgu.zamzow.scheduler.helpers.DateHelper;
 import ed.wgu.zamzow.scheduler.objects.Assessment;
 import ed.wgu.zamzow.scheduler.objects.Class;
 
-public class AddAssessmentActivity extends AppCompatActivity {
+public class AssessmentViewActivity extends AppCompatActivity {
 
-
+    private Assessment selectedAssessment;
     private EditText editTitle, editEnd;
-    private Button btnCancel, btnSave;
     private AppCompatSpinner spinnerType;
     private EditText editThis;
     private final Calendar myCalendar= Calendar.getInstance();
-    private Class selectedClass;
+    private FloatingActionButton fabEdit;
+    private boolean isEditMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_assessment);
+        setContentView(R.layout.activity_assessment_view);
 
         DatePickerDialog.OnDateSetListener date = (view, year, month, day) -> {
             myCalendar.set(Calendar.YEAR, year);
@@ -41,41 +43,60 @@ public class AddAssessmentActivity extends AppCompatActivity {
             setdate();
         };
 
-        selectedClass = (Class) getIntent().getSerializableExtra("selectedClass");
+        selectedAssessment = (Assessment) getIntent().getSerializableExtra("selectedAssessment");
 
+        fabEdit = findViewById(R.id.fabEdit);
 
         editTitle = findViewById(R.id.editAssessmentName);
         editEnd = findViewById(R.id.editEndDate);
         spinnerType = findViewById(R.id.spinnerType);
 
-        btnCancel = findViewById(R.id.btnCancel);
-        btnSave = findViewById(R.id.btnSave);
-
-        btnCancel.setOnClickListener(view -> finish());
-
-        btnSave.setOnClickListener((view -> {
-            Assessment assessment = new Assessment();
-            assessment.setTitle(editTitle.getText().toString());
-            assessment.setEnd(DateHelper.getDate(editEnd.getText().toString()));
-            assessment.setType(spinnerType.getSelectedItemPosition());
-            assessment.setClassID(selectedClass.getId());
-
-            DBWriter dbWriter = new DBWriter(this);
-            dbWriter.CreateAssessment(assessment);
-            finish();
-
-        }));
 
         editEnd.setOnFocusChangeListener((view, b) -> {
             if (view.hasFocus()) {
                 editThis = editEnd;
-                new DatePickerDialog(AddAssessmentActivity.this, date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                new DatePickerDialog(AssessmentViewActivity.this, date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
 
         ArrayAdapter<CharSequence> statusAdapter = ArrayAdapter.createFromResource(this, R.array.assessment_type_array, android.R.layout.simple_spinner_item);
         statusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerType.setEnabled(false);
         spinnerType.setAdapter(statusAdapter);
+
+        spinnerType.setSelection(selectedAssessment.getType());
+
+        fabEdit.setOnClickListener(view -> {
+            if (!isEditMode) {
+                isEditMode = true;
+                fabEdit.setImageResource(android.R.drawable.ic_menu_save);
+            } else {
+                SaveChanges();
+                isEditMode = false;
+                fabEdit.setImageResource(android.R.drawable.ic_menu_edit);
+            }
+
+            editTitle.setEnabled(isEditMode);
+            editEnd.setEnabled(isEditMode);
+            spinnerType.setEnabled(isEditMode);
+        });
+
+        editTitle.setText(selectedAssessment.getTitle());
+        editEnd.setText(DateHelper.showAltDate(selectedAssessment.getEnd()));
+
+    }
+
+    private void SaveChanges() {
+        Assessment assessment = new Assessment();
+        assessment.setID(selectedAssessment.getID());
+        assessment.setTitle(editTitle.getText().toString());
+        assessment.setEnd(DateHelper.getDate(editEnd.getText().toString()));
+        assessment.setType(spinnerType.getSelectedItemPosition());
+        assessment.setClassID(selectedAssessment.getClassID());
+
+        DBWriter dbWriter = new DBWriter(this);
+        dbWriter.UpdateAssessment(assessment);
+        finish();
     }
 
     public void setdate() {

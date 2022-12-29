@@ -1,10 +1,7 @@
 package ed.wgu.zamzow.scheduler.helpers;
 
-import android.widget.EditText;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -21,6 +18,10 @@ public class DateHelper {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static String showAltDate(Date iniDate) {
+        return formatter.format(iniDate);
     }
 
     public static Date getDateFromDB(String iniDate) {

@@ -28,6 +28,7 @@ import ed.wgu.zamzow.scheduler.adapters.AssessmentAdapter;
 import ed.wgu.zamzow.scheduler.adapters.CoursesAdapter;
 import ed.wgu.zamzow.scheduler.adapters.NotesAdapter;
 import ed.wgu.zamzow.scheduler.database.DBReader;
+import ed.wgu.zamzow.scheduler.database.DBWriter;
 import ed.wgu.zamzow.scheduler.helpers.DateHelper;
 import ed.wgu.zamzow.scheduler.objects.Assessment;
 import ed.wgu.zamzow.scheduler.objects.Class;
@@ -85,6 +86,18 @@ public class ClassViewActivity extends AppCompatActivity {
     }
 
     private void SaveChanges() {
+        Class course = new Class();
+        course.setId(selectedClass.getId());
+        course.setTitle(txtTitle.getText().toString());
+        course.setStatus(spinnerStatus.getSelectedItemPosition());
+        course.setStart(DateHelper.getDate(txtStart.getText().toString()));
+        course.setEnd(DateHelper.getDate(txtEnd.getText().toString()));
+        course.setDesc(txtDesc.getText().toString());
+        course.setInstructorID(((Instructor)spinnerInstructor.getSelectedItem()).getID());
+        course.setTermid(selectedClass.getTermid());
+        DBWriter dbWriter = new DBWriter(this);
+        dbWriter.UpdateCourse(course);
+        finish();
 
     }
 
@@ -97,7 +110,7 @@ public class ClassViewActivity extends AppCompatActivity {
     private void AddNote() {
         Intent addNoteActivity = new Intent(this, AddNoteActivity.class);
         addNoteActivity.putExtra("selectedClass", selectedClass);
-        startActivityForResult(addNoteActivity, ADD_ASSESSMENT);
+        startActivityForResult(addNoteActivity, ADD_NOTE);
     }
 
     @Override
@@ -144,6 +157,7 @@ public class ClassViewActivity extends AppCompatActivity {
                     isEditMode = true;
                     fabEdit.setImageResource(android.R.drawable.ic_menu_save);
                 } else {
+                    SaveChanges();
                     isEditMode = false;
                     fabEdit.setImageResource(android.R.drawable.ic_menu_edit);
                 }
@@ -157,8 +171,8 @@ public class ClassViewActivity extends AppCompatActivity {
                 SetupDateFields();
             });
 
-            txtStart.setText(DateHelper.showDate(selectedClass.getStart()));
-            txtEnd.setText(DateHelper.showDate(selectedClass.getEnd()));
+            txtStart.setText(DateHelper.showAltDate(selectedClass.getStart()));
+            txtEnd.setText(DateHelper.showAltDate(selectedClass.getEnd()));
         }
 
         dbReader = new DBReader(this);
@@ -197,9 +211,9 @@ public class ClassViewActivity extends AppCompatActivity {
         AssessmentAdapter assessmentAdapter = new AssessmentAdapter(this, assessments);
         assessmentAdapter.setClickListener((view, position) -> {
             Assessment assessment = assessments.get(position);
-            Intent termView = new Intent(this, ClassViewActivity.class);
-            termView.putExtra("selectedClass", selectedClass);
-            startActivity(termView);
+            Intent assessmentView = new Intent(this, AssessmentViewActivity.class);
+            assessmentView.putExtra("selectedAssessment", assessment);
+            startActivityForResult(assessmentView,ADD_ASSESSMENT);
         });
         recyclerAssessments.setAdapter(assessmentAdapter);
     }
