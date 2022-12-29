@@ -113,4 +113,21 @@ public class DBReader {
         cursor.close();
         return instructors;
     }
+
+    public Instructor getInstructor(int id) {
+        Instructor instructor = new Instructor();
+        String[] params = {"*"};
+        String whereClause = "ID = ?";
+        String[] whereArgs = {String.valueOf(id)};
+        Cursor cursor = db.query("instructors",params,whereClause, whereArgs, null, null, null);
+        while (cursor.moveToNext()) {
+            instructor.setID(cursor.getInt(cursor.getColumnIndexOrThrow("ID")));
+            instructor.setName(cursor.getString(cursor.getColumnIndexOrThrow("name")));
+            instructor.setEmail(cursor.getString(cursor.getColumnIndexOrThrow("email")));
+            instructor.setPhone(cursor.getString(cursor.getColumnIndexOrThrow("phone")));
+            cursor.close();
+        }
+
+        return instructor;
+    }
 }

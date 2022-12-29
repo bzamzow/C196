@@ -1,6 +1,8 @@
 package ed.wgu.zamzow.scheduler.objects;
 
-public class Instructor {
+import java.io.Serializable;
+
+public class Instructor implements Serializable {
 
     private String name;
     private String email;

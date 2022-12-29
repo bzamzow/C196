@@ -113,6 +113,13 @@ public class ClassViewActivity extends AppCompatActivity {
         startActivityForResult(addNoteActivity, ADD_NOTE);
     }
 
+    private void ViewInstructor() {
+        Instructor instructor = dbReader.getInstructor(selectedClass.getInstructorID());
+        Intent viewInstructorActivity = new Intent(this, ViewInstructor.class);
+        viewInstructorActivity.putExtra("selectedInstructor", instructor);
+        startActivity(viewInstructorActivity);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.classes_menu, menu);
@@ -127,6 +134,9 @@ public class ClassViewActivity extends AppCompatActivity {
                 return true;
             case R.id.add_note:
                 AddNote();
+                return true;
+            case R.id.view_instructor:
+                ViewInstructor();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

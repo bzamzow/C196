@@ -10,5 +10,9 @@
         android:id="@+id/add_assessment"
         android:icon="@android:drawable/ic_input_add"
         android:title="Add Assessment" />
+    <item
+        android:id="@+id/view_instructor"
+        android:icon="@android:drawable/ic_dialog_info"
+        android:title="View Instructor" />
 
 </menu>
