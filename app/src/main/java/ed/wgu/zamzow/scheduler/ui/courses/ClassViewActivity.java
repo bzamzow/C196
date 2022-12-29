@@ -225,9 +225,13 @@ public class ClassViewActivity extends AppCompatActivity {
         NotesAdapter coursesAdapter = new NotesAdapter(this, notes);
         coursesAdapter.setClickListener((view, position) -> {
             Note selectedNote = notes.get(position);
-            Intent termView = new Intent(this, ClassViewActivity.class);
-            termView.putExtra("selectedClass", selectedClass);
-            startActivity(termView);
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT,selectedNote.getTitle() + ":\n" + selectedNote.getNote());
+            sendIntent.setType("text/plain");
+
+            Intent shareIntent = Intent.createChooser(sendIntent, null);
+            startActivity(shareIntent);
         });
         recyclerNotes.setAdapter(coursesAdapter);
     }
