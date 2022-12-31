@@ -3,8 +3,10 @@ package ed.wgu.zamzow.scheduler.database;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import ed.wgu.zamzow.scheduler.helpers.DateHelper;
@@ -17,8 +19,10 @@ import ed.wgu.zamzow.scheduler.objects.Term;
 public class DBReader {
     private SchedulerDB schedulerDB;
     private final SQLiteDatabase db;
+    private Context context;
 
     public DBReader(Context context) {
+        this.context = context;
         schedulerDB = new SchedulerDB(context);
         db = schedulerDB.getReadableDatabase();
     }
@@ -43,6 +47,28 @@ public class DBReader {
         ArrayList<Class> courses = new ArrayList<>();
         String[] params = {"*"};
         String whereClause = "termid = ?";
+        String[] whereArgs = {String.valueOf(TermID)};
+        Cursor cursor = db.query("courses",params,whereClause, whereArgs, null, null, null);
+        while (cursor.moveToNext()) {
+            Class course = new Class();
+            course.setId(cursor.getInt(cursor.getColumnIndexOrThrow("ID")));
+            course.setTitle(cursor.getString(cursor.getColumnIndexOrThrow("title")));
+            course.setDesc(cursor.getString(cursor.getColumnIndexOrThrow("description")));
+            course.setStatus(cursor.getInt(cursor.getColumnIndexOrThrow("status")));
+            course.setStart(DateHelper.getDateFromDB(cursor.getString(cursor.getColumnIndexOrThrow("start"))));
+            course.setEnd(DateHelper.getDateFromDB(cursor.getString(cursor.getColumnIndexOrThrow("endDate"))));
+            course.setInstructorID(cursor.getInt(cursor.getColumnIndexOrThrow("instructorID")));
+            course.setTermid(cursor.getInt(cursor.getColumnIndexOrThrow("termid")));
+            courses.add(course);
+        }
+        cursor.close();
+        return courses;
+    }
+
+    public ArrayList<Class> getCurrentCourses(int TermID) {
+        ArrayList<Class> courses = new ArrayList<>();
+        String[] params = {"*"};
+        String whereClause = "termid = ? and status = 1";
         String[] whereArgs = {String.valueOf(TermID)};
         Cursor cursor = db.query("courses",params,whereClause, whereArgs, null, null, null);
         while (cursor.moveToNext()) {

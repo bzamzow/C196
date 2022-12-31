@@ -33,6 +33,11 @@ public class DateHelper {
         }
     }
 
+
+    public static String toDBDate(Date iniDate) {
+        return reverseFormatter.format(iniDate);
+    }
+
     public static String showDate(Date iniDate) {
         return readable.format(iniDate);
     }

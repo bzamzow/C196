@@ -17,9 +17,4 @@
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_terms" />
 
-    <fragment
-        android:id="@+id/navigation_schedules"
-        android:name="ed.wgu.zamzow.scheduler.ui.schedules.SchedulesFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_schedules" />
 </navigation>
