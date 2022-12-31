@@ -14,5 +14,9 @@
         android:id="@+id/view_instructor"
         android:icon="@android:drawable/ic_dialog_info"
         android:title="View Instructor" />
+    <item
+        android:id="@+id/delete_class"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="Delete Class" />
 
 </menu>

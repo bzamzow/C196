@@ -31,6 +31,13 @@ public class DBWriter {
         db.close();
     }
 
+    public void DeleteTerm(Term term) {
+        String whereClause = "ID = ?";
+        String[] whereArgs = {String.valueOf(term.getId())};
+        db.delete("terms",whereClause, whereArgs);
+        db.close();
+    }
+
     public void CreateCourse(Class course) {
         ContentValues values = new ContentValues();
         values.put("title", course.getTitle());
@@ -42,6 +49,25 @@ public class DBWriter {
         values.put("termid", course.getTermid());
         db.insert("courses",null, values);
         db.close();
+    }
+
+    public void DeleteCourse(Class course) {
+        String whereClause = "ID = ?";
+        String[] whereArgs = {String.valueOf(course.getId())};
+        db.delete("courses",whereClause, whereArgs);
+        db.close();
+    }
+
+    public void DeleteAssessments(Class course) {
+        String whereClause = "ID = ?";
+        String[] whereArgs = {String.valueOf(course.getId())};
+        db.delete("assessments",whereClause, whereArgs);
+    }
+
+    public void DeleteNotes(Class course) {
+        String whereClause = "ID = ?";
+        String[] whereArgs = {String.valueOf(course.getId())};
+        db.delete("notes",whereClause, whereArgs);
     }
 
     public void UpdateCourse(Class course) {

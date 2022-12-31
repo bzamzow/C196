@@ -1,25 +1,36 @@
 package ed.wgu.zamzow.scheduler.ui.courses;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.core.app.NotificationCompat;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
+import java.util.Random;
 
 import ed.wgu.zamzow.scheduler.R;
 import ed.wgu.zamzow.scheduler.database.DBWriter;
 import ed.wgu.zamzow.scheduler.helpers.DateHelper;
+import ed.wgu.zamzow.scheduler.helpers.NotificationReceiver;
 import ed.wgu.zamzow.scheduler.objects.Assessment;
-import ed.wgu.zamzow.scheduler.objects.Class;
 
 public class AssessmentViewActivity extends AppCompatActivity {
 
@@ -30,6 +41,8 @@ public class AssessmentViewActivity extends AppCompatActivity {
     private final Calendar myCalendar= Calendar.getInstance();
     private FloatingActionButton fabEdit;
     private boolean isEditMode = false;
+    public static String NOTIFICATION_ID = "notification-id" ;
+    public static String NOTIFICATION = "notification" ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +97,60 @@ public class AssessmentViewActivity extends AppCompatActivity {
         editTitle.setText(selectedAssessment.getTitle());
         editEnd.setText(DateHelper.showAltDate(selectedAssessment.getEnd()));
 
+    }
+
+    private void CreateReminder() {
+        Date dueDate = selectedAssessment.getEnd();
+        Calendar dayBefore = Calendar.getInstance();
+        Calendar today = Calendar.getInstance();
+        today.setTime(dueDate);;
+        today.set(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH),11,2);
+        dayBefore.setTime(dueDate);;
+        dayBefore.add(Calendar.DAY_OF_MONTH, -1);
+        dayBefore.set(dayBefore.get(Calendar.YEAR), dayBefore.get(Calendar.MONTH), dayBefore.get(Calendar.DAY_OF_MONTH),11,2);
+
+
+        scheduleNotification(getNotification(selectedAssessment.getTitle() + " is due today"),today.getTimeInMillis());
+        if (Calendar.getInstance().before(dayBefore)) {
+            scheduleNotification(getNotification(selectedAssessment.getTitle() + " is due tomorrow"), dayBefore.getTimeInMillis());
+        }
+    }
+
+    private void scheduleNotification (Notification notification , long delay) {
+        Intent notificationIntent = new Intent( this, NotificationReceiver.class ) ;
+        notificationIntent.putExtra(NotificationReceiver.NOTIFICATION_ID , new Random().nextInt() ) ;
+        notificationIntent.putExtra(NotificationReceiver.NOTIFICATION , notification) ;
+        PendingIntent pendingIntent = PendingIntent.getBroadcast ( getApplicationContext(), new Random().nextInt(), notificationIntent , PendingIntent.FLAG_IMMUTABLE ) ;
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE ) ;
+        assert alarmManager != null;
+        alarmManager.set(AlarmManager.RTC_WAKEUP, delay, pendingIntent) ;
+    }
+    private Notification getNotification (String content) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder( this, "default" ) ;
+        builder.setContentTitle( "Due Date" ) ;
+        builder.setContentText(content) ;
+        builder.setSmallIcon(android.R.drawable.ic_lock_idle_alarm ) ;
+        builder.setAutoCancel( true ) ;
+        builder.setChannelId( "47" ) ;
+        return builder.build() ;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.assessment_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.assessment_notify:
+                CreateReminder();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void SaveChanges() {

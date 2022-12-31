@@ -15,6 +15,7 @@ import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
@@ -120,6 +121,34 @@ public class ClassViewActivity extends AppCompatActivity {
         startActivity(viewInstructorActivity);
     }
 
+    private void DeleteClass() {
+        if (assessments.size() > 0 || notes.size() > 0) {
+            MaterialAlertDialogBuilder coursesError = new MaterialAlertDialogBuilder(this)
+                    .setTitle("Associated Items")
+                    .setMessage("There are " + assessments.size() + " assessments and " + notes.size() + " notes associated with this term. \n\nDo you wish for them to be deleted?")
+                    .setPositiveButton("OK", (dialogInterface, i) -> {
+                        DBWriter dbWriter = new DBWriter(this);
+                        dbWriter.DeleteAssessments(selectedClass);
+                        dbWriter.DeleteNotes(selectedClass);
+                        dbWriter.DeleteCourse(selectedClass);
+                        finish();
+                    })
+                    .setNegativeButton("Cancel", ((dialogInterface, i) -> dialogInterface.dismiss()));
+            coursesError.show();
+        } else {
+            MaterialAlertDialogBuilder deleteCourse = new MaterialAlertDialogBuilder(this)
+                    .setTitle("Delete Course")
+                    .setMessage("Are you sure you want to delete " + selectedClass.getTitle() + "?")
+                    .setPositiveButton("OK", (dialogInterface, i) -> {
+                        DBWriter dbWriter = new DBWriter(this);
+                        dbWriter.DeleteCourse(selectedClass);
+                        finish();
+                    })
+                    .setNegativeButton("Cancel", ((dialogInterface, i) -> dialogInterface.dismiss()));
+            deleteCourse.show();
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.classes_menu, menu);
@@ -137,6 +166,9 @@ public class ClassViewActivity extends AppCompatActivity {
                 return true;
             case R.id.view_instructor:
                 ViewInstructor();
+                return true;
+            case R.id.delete_class:
+                DeleteClass();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -215,7 +247,7 @@ public class ClassViewActivity extends AppCompatActivity {
     }
 
     private void SetupAssessments() {
-        ArrayList<Assessment> assessments = dbReader.getAssessments(selectedClass.getId());
+        assessments = dbReader.getAssessments(selectedClass.getId());
         recyclerAssessments = findViewById(R.id.recyclerAssessments);
         recyclerAssessments.setLayoutManager(new LinearLayoutManager(this));
         AssessmentAdapter assessmentAdapter = new AssessmentAdapter(this, assessments);
@@ -229,7 +261,7 @@ public class ClassViewActivity extends AppCompatActivity {
     }
 
     private void SetupNotes() {
-        ArrayList<Note> notes = dbReader.getNotes(selectedClass.getId());
+        notes = dbReader.getNotes(selectedClass.getId());
         recyclerNotes = findViewById(R.id.recyclerNotes);
         recyclerNotes.setLayoutManager(new LinearLayoutManager(this));
         NotesAdapter coursesAdapter = new NotesAdapter(this, notes);

@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace 'ed.wgu.zamzow.scheduler'
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "ed.wgu.zamzow.scheduler"
@@ -29,6 +29,7 @@ android {
     buildFeatures {
         viewBinding true
     }
+    buildToolsVersion '33.0.1'
 }
 
 dependencies {
