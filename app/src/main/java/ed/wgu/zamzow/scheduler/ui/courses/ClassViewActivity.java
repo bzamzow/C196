@@ -1,6 +1,10 @@
 package ed.wgu.zamzow.scheduler.ui.courses;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,7 +26,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import ed.wgu.zamzow.scheduler.R;
@@ -31,6 +38,7 @@ import ed.wgu.zamzow.scheduler.adapters.NotesAdapter;
 import ed.wgu.zamzow.scheduler.database.DBReader;
 import ed.wgu.zamzow.scheduler.database.DBWriter;
 import ed.wgu.zamzow.scheduler.helpers.DateHelper;
+import ed.wgu.zamzow.scheduler.helpers.NotificationReceiver;
 import ed.wgu.zamzow.scheduler.objects.Assessment;
 import ed.wgu.zamzow.scheduler.objects.Class;
 import ed.wgu.zamzow.scheduler.objects.Instructor;
@@ -149,6 +157,45 @@ public class ClassViewActivity extends AppCompatActivity {
         }
     }
 
+
+
+    private void CreateReminder() {
+        Date dueDate = selectedClass.getEnd();
+        Date startDate = selectedClass.getStart();
+        Calendar start = Calendar.getInstance();
+        Calendar end = Calendar.getInstance();
+        start.setTime(startDate);
+        end.setTime(dueDate);
+        end.set(end.get(Calendar.YEAR), end.get(Calendar.MONTH), end.get(Calendar.DAY_OF_MONTH),8,0);
+        start.set(start.get(Calendar.YEAR), start.get(Calendar.MONTH), start.get(Calendar.DAY_OF_MONTH),8,0);
+
+
+        scheduleNotification(getNotification(selectedClass.getTitle() + " Starts today"),start.getTimeInMillis());
+
+        scheduleNotification(getNotification(selectedClass.getTitle() + " Ends today"), end.getTimeInMillis());
+
+    }
+
+    private void scheduleNotification (Notification notification , long delay) {
+        Intent notificationIntent = new Intent( this, NotificationReceiver.class ) ;
+        notificationIntent.putExtra(NotificationReceiver.NOTIFICATION_ID , new Random().nextInt() ) ;
+        notificationIntent.putExtra(NotificationReceiver.NOTIFICATION , notification) ;
+        PendingIntent pendingIntent = PendingIntent.getBroadcast ( getApplicationContext(), new Random().nextInt(), notificationIntent , PendingIntent.FLAG_IMMUTABLE ) ;
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE ) ;
+        assert alarmManager != null;
+        alarmManager.set(AlarmManager.RTC_WAKEUP, delay, pendingIntent) ;
+    }
+    private Notification getNotification (String content) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder( this, "default" ) ;
+        builder.setContentTitle( "Course Alert" ) ;
+        builder.setContentText(content) ;
+        builder.setSmallIcon(android.R.drawable.ic_lock_idle_alarm ) ;
+        builder.setAutoCancel( true ) ;
+        builder.setChannelId( "42" ) ;
+        return builder.build() ;
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.classes_menu, menu);
@@ -169,6 +216,9 @@ public class ClassViewActivity extends AppCompatActivity {
                 return true;
             case R.id.delete_class:
                 DeleteClass();
+                return true;
+            case R.id.class_notify:
+                CreateReminder();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

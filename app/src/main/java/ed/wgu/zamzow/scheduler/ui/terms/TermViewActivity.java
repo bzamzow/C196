@@ -56,7 +56,7 @@ public class TermViewActivity extends AppCompatActivity {
             fabAddCourse.setOnClickListener(view -> {
                 Intent addCourseActivity = new Intent(this, AddClassActivity.class);
                 addCourseActivity.putExtra("selectedTerm",selectedTerm);
-                startActivity(addCourseActivity);
+                startActivityForResult(addCourseActivity, 114);
             });
         }
     }
@@ -117,9 +117,7 @@ public class TermViewActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        SetupInterface();
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == VIEW_COURSE) {
-            SetupInterface();
-        }
     }
 }

@@ -18,5 +18,9 @@
         android:id="@+id/delete_class"
         android:icon="@android:drawable/ic_menu_delete"
         android:title="Delete Class" />
+    <item
+        android:id="@+id/class_notify"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:title="Create Reminder" />
 
 </menu>
